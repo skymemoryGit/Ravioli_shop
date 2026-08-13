@@ -111,7 +111,10 @@ section{position:relative}
 /* ============================================================
    HERO — animazione scroll-driven
    ============================================================ */
-#hero{height:560vh}
+/* durata dello scroll della hero: accorciata (era 760vh) — l'animazione
+   è la stessa, ma servono ~1 schermata in meno di rotellina per
+   arrivare in fondo. Ogni cestello ha comunque il suo tempo di lettura. */
+#hero{height:660vh}
 .hero-sticky{
   position:sticky;top:0;height:100svh;overflow:hidden;
   display:grid;place-items:center;
@@ -191,29 +194,59 @@ section{position:relative}
 .loader .lo-txt{font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--cream-dim)}
 
 
-/* --- info pin --- */
-.pins{position:absolute;inset:0;z-index:7;pointer-events:none}
-.pin{position:absolute;display:flex}
+/* --- info pin ---
+   Una sola didascalia per volta, sempre allineata al cestello a fuoco.
+   --pin-y = 61%: è la stessa quota di .steamer (top:61%), che in fase 3
+   porta il centro del cestello attivo esattamente lì. Così la card è
+   SEMPRE in linea con il prodotto di cui parla, e siccome è agganciata
+   alla comparsa/uscita del suo cestello non resta mai in scena una
+   didascalia orfana. */
+.pins{position:absolute;inset:0;z-index:7;pointer-events:none;--pin-y:61%}
+.pin{
+  position:absolute;display:flex;
+  /* aggancio appena fuori dal bordo del cestello a fuoco */
+  left:calc(50% + min(206px,29vw));
+  top:var(--pin-y);
+  transform:translateY(-50%);
+}
 .pin-inner{
   display:flex;align-items:center;gap:12px;opacity:0;
   will-change:transform,opacity;
 }
-.pin-1,.pin-3{left:calc(50% + min(148px,25vw));top:41%}
-.pin-2{right:calc(50% + min(148px,25vw));top:47%}
-.pin-line{width:70px;height:1px;background:linear-gradient(90deg,var(--bamboo),transparent);flex:0 0 auto}
+.pin-line{width:54px;height:1px;background:linear-gradient(90deg,var(--bamboo),rgba(217,179,108,.15));
+  flex:0 0 auto;transform-origin:left center;will-change:transform}
+/* alone scuro: il pallino cade sul cestello illuminato e deve restare leggibile */
 .pin-dot{width:8px;height:8px;border-radius:50%;background:var(--bamboo);flex:0 0 auto;
-  box-shadow:0 0 0 5px rgba(217,179,108,.18)}
+  box-shadow:0 0 0 5px rgba(217,179,108,.18), 0 0 14px 5px rgba(23,18,14,.85);
+  will-change:transform}
 .pin-card{
-  background:rgba(23,18,14,.82);backdrop-filter:blur(8px);
-  border:1px solid rgba(217,179,108,.3);border-radius:10px;
-  padding:10px 15px;min-width:172px;
+  background:rgba(23,18,14,.86);backdrop-filter:blur(10px);
+  border:1px solid rgba(217,179,108,.3);border-radius:12px;
+  padding:14px 18px;min-width:206px;max-width:min(304px,30vw);
+  box-shadow:0 18px 40px rgba(0,0,0,.42);
 }
-.pin-card b{display:block;font-family:var(--font-display);font-size:16px;font-weight:600;letter-spacing:-.01em}
-.pin-card span{display:block;font-size:12.5px;color:var(--cream-dim);line-height:1.45;margin-top:2px}
-.pin-card em{display:block;font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bamboo);margin-top:6px}
-/* pin a sinistra: ordine invertito */
-.pin.left .pin-inner{flex-direction:row-reverse}
-.pin.left .pin-line{background:linear-gradient(270deg,var(--bamboo),transparent)}
+/* contatore di passo: dice sempre "a che punto sono" (1 di 3) */
+.pin-step{
+  display:flex;align-items:center;gap:8px;margin-bottom:9px;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
+  color:rgba(246,238,226,.4);
+}
+.pin-step i{font-style:normal;color:var(--bamboo)}
+.pin-step u{text-decoration:none;flex:1 1 auto;min-width:16px;height:1px;
+  background:rgba(217,179,108,.28)}
+.pin-card > b{display:block;font-family:var(--font-display);font-size:17px;font-weight:600;letter-spacing:-.01em}
+.pin-card > span{display:block;font-size:13px;color:var(--cream-dim);line-height:1.45;margin-top:3px}
+.pin-card > em{display:block;font-style:normal;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--bamboo);margin-top:8px}
+
+/* fallback senza animazione (reduced-motion / GSAP assente):
+   qui i cestelli sono tutti fermi e visibili insieme, quindi le tre
+   didascalie tornano a posizioni distinte e non si accavallano */
+.pins.is-static .pin{top:auto;transform:none}
+.pins.is-static .pin-1{top:26%}
+.pins.is-static .pin-2{top:46%;left:auto;right:calc(50% + min(152px,23vw))}
+.pins.is-static .pin-3{top:66%}
+.pins.is-static .pin.left .pin-inner{flex-direction:row-reverse}
+.pins.is-static .pin.left .pin-line{background:linear-gradient(270deg,var(--bamboo),rgba(217,179,108,.15))}
 
 /* --- box delivery (fase 4) --- */
 .deli-box{
@@ -305,16 +338,34 @@ section{position:relative}
   background:var(--bamboo);animation:sh 1.9s ease-in-out infinite}
 @keyframes sh{0%{top:-34px}60%,100%{top:34px}}
 
-/* indicatore di fase */
+/* indicatore di fase — anche navigazione: si può saltare a una fase */
+/* a sinistra: la colonna destra è tutta della didascalia del cestello */
 .phase-dots{
-  position:absolute;right:var(--pad);top:50%;transform:translateY(-50%);
-  z-index:9;display:flex;flex-direction:column;gap:14px;
+  position:absolute;left:var(--pad);top:50%;transform:translateY(-50%);
+  z-index:9;display:flex;flex-direction:column;gap:2px;align-items:flex-start;
 }
-.phase-dots i{
+.phase-dots button{
+  display:flex;flex-direction:row-reverse;align-items:center;justify-content:flex-end;gap:11px;
+  background:none;border:0;padding:8px 14px 8px 0;cursor:pointer;
+  font-family:var(--font-body);font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;font-weight:700;color:rgba(246,238,226,.38);
+  transition:color .28s ease;
+}
+.phase-dots button span{
+  opacity:0;transform:translateX(-8px);transition:.3s cubic-bezier(.22,.8,.3,1);
+  white-space:nowrap;
+}
+.phase-dots button i{
   width:6px;height:6px;border-radius:50%;background:rgba(246,238,226,.22);
-  transition:.3s ease;
+  transition:.3s ease;flex:0 0 auto;display:block;
 }
-.phase-dots i.on{background:var(--bamboo);transform:scale(1.6)}
+.phase-dots button:hover{color:var(--cream)}
+.phase-dots button:hover i{background:rgba(246,238,226,.5)}
+.phase-dots button:hover span,
+.phase-dots button:focus-visible span{opacity:1;transform:none}
+.phase-dots button.on{color:var(--bamboo)}
+.phase-dots button.on i{background:var(--bamboo);transform:scale(1.6)}
+.phase-dots button.on span{opacity:1;transform:none}
 
 /* ============================================================
    SEZIONI
@@ -631,24 +682,33 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
   .nav a{font-size:19px;padding:11px 0;font-family:var(--font-display)}
   .nav .btn{margin-top:12px}
   .nav-toggle{display:block;margin-left:auto;order:9;z-index:2}
-  #hero{height:380vh}
+  #hero{height:560vh}
   .phase-dots{display:none}
-  /* didascalia del cestello a fuoco: centrata sotto, leggibile */
+  /* una sola didascalia in scena, sotto al cestello a fuoco:
+     stessa posizione per tutte e tre, non si accavallano perché
+     non sono mai visibili insieme */
   .pin-line,.pin-dot{display:none}
-  .pin-1,.pin-2,.pin-3{left:50%;right:auto;top:auto;bottom:15%;
-    transform:translateX(-50%);width:min(360px,88vw);justify-content:center}
+  .pin{left:50%;right:auto;top:auto;bottom:12%;
+    transform:translateX(-50%);width:min(340px,86vw);justify-content:center}
   .pin.left .pin-inner{flex-direction:row}
   .pin-inner{width:100%}
+  .pin-step{justify-content:center}
+  .pin-step u{display:none}
   .pin-card{
-    min-width:0;width:100%;text-align:center;
+    min-width:0;max-width:none;width:100%;text-align:center;
     padding:16px 18px;border-radius:14px;
     background:rgba(23,18,14,.9);
     border-color:rgba(217,179,108,.34);
     box-shadow:0 14px 34px rgba(0,0,0,.45);
   }
-  .pin-card b{font-size:19px}
-  .pin-card span{font-size:14px;margin-top:5px}
-  .pin-card em{display:block;font-size:10.5px;margin-top:9px}
+  .pin-card > b{font-size:19px}
+  .pin-card > span{font-size:14px;margin-top:5px}
+  .pin-card > em{display:block;font-size:10.5px;margin-top:9px}
+  /* fallback statico: torna alle tre quote separate */
+  .pins.is-static .pin{left:50%;right:auto;top:auto;transform:translateX(-50%)}
+  .pins.is-static .pin-1{bottom:40%}
+  .pins.is-static .pin-2{bottom:24%}
+  .pins.is-static .pin-3{bottom:8%}
   .hero-cta{flex-direction:column;align-items:center;bottom:14%}
   .foot-grid{grid-template-columns:1fr}
   .cookie{left:12px;right:12px;max-width:none}
@@ -792,6 +852,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       <div class="pin pin-1"><div class="pin-inner">
         <span class="pin-dot"></span><span class="pin-line"></span>
         <div class="pin-card">
+          <div class="pin-step"><i>01</i>&nbsp;/&nbsp;03 <u></u> Primo piano</div>
           <b>Jiaozi alla griglia</b>
           <span>Maiale, cavolo verza, zenzero — fondo croccante</span>
           <em>Scottati in padella</em>
@@ -800,6 +861,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       <div class="pin pin-2 left"><div class="pin-inner">
         <span class="pin-dot"></span><span class="pin-line"></span>
         <div class="pin-card">
+          <div class="pin-step"><i>02</i>&nbsp;/&nbsp;03 <u></u> Secondo piano</div>
           <b>Ravioli di maiale al vapore</b>
           <span>Maiale, verza, zenzero, cipollotto</span>
           <em>Chiusi a mano, 4 pezzi</em>
@@ -808,6 +870,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       <div class="pin pin-3"><div class="pin-inner">
         <span class="pin-dot"></span><span class="pin-line"></span>
         <div class="pin-card">
+          <div class="pin-step"><i>03</i>&nbsp;/&nbsp;03 <u></u> Terzo piano</div>
           <b>Shaomai</b>
           <span>Maiale, gamberi, funghi shiitake, cipollotto</span>
           <em>Aperti in cima, a mano</em>
@@ -838,7 +901,12 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       <span>Scorri</span><span class="track"></span>
     </div>
 
-    <div class="phase-dots" id="phaseDots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
+    <nav class="phase-dots" id="phaseDots" aria-label="Capitoli dell'animazione">
+      <button type="button" class="on" data-go="0"><span>Chiusa</span><i></i></button>
+      <button type="button" data-go="1"><span>Si apre</span><i></i></button>
+      <button type="button" data-go="2"><span>I tre piani</span><i></i></button>
+      <button type="button" data-go="3"><span>Da portare via</span><i></i></button>
+    </nav>
     <div class="hero-vignette"></div>
   </div>
 </section>
@@ -1576,10 +1644,14 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         'translateX(-50%) translateY(' + (OPEN[id]*S*k) + 'px) scale(' + k + ')';
     });
     $('#lid').style.opacity = 0;
+    /* senza animazione i tre cestelli restano visibili insieme:
+       le didascalie tornano alle tre quote separate (vedi .is-static) */
+    $('#pins').classList.add('is-static');
     $$('.pin-inner').forEach(function(el){ el.style.opacity = 1; });
     var cta = $('#heroCta');
     cta.style.opacity = 1; cta.style.transform = 'translateX(-50%)'; cta.classList.add('on');
     $('#scrollHint').style.display = 'none';
+    $('#phaseDots').style.display = 'none';   /* senza timeline non c'è nulla da indicare */
   }
 
   if(reduce || !window.gsap || !window.ScrollTrigger){
@@ -1587,12 +1659,35 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
   } else {
     gsap.registerPlugin(ScrollTrigger);
 
-    var dots = $$('#phaseDots i'), ctaEl = $('#heroCta');
+    var dots = $$('#phaseDots button'), ctaEl = $('#heroCta');
+    /* tempi (in unità di timeline) di inizio di ogni fase — servono sia
+       per accendere il pallino giusto sia per il salto al click */
+    var PHASE_IN = [0, 15, 36, 97];
+    var PHASE_GO = [0, 24, 50, 126];   /* dove atterrare: già "a scena fatta" */
+    var TLD = 127;                      /* durata timeline, aggiornata al build */
+
     var setPhase = function(p){
-      var i = p < .15 ? 0 : p < .36 ? 1 : p < .70 ? 2 : 3;
-      dots.forEach(function(d,k){ d.classList.toggle('on', k === i); });
-      ctaEl.classList.toggle('on', p > .93);
+      var t = p * TLD, i = 0;
+      for(var k = 0; k < PHASE_IN.length; k++){ if(t >= PHASE_IN[k]) i = k; }
+      dots.forEach(function(d,k){
+        var on = k === i;
+        d.classList.toggle('on', on);
+        d.setAttribute('aria-current', on ? 'true' : 'false');
+      });
+      ctaEl.classList.toggle('on', t > TLD - 9);
     };
+
+    /* i pallini diventano navigazione: chi non vuole scorrere tutto
+       salta direttamente al capitolo (o alla fine) */
+    dots.forEach(function(d,k){
+      d.addEventListener('click', function(){
+        var span = hero.offsetHeight - window.innerHeight;
+        window.scrollTo({
+          top: hero.offsetTop + span * Math.min(PHASE_GO[k] / TLD, 1),
+          behavior: reduce ? 'auto' : 'smooth'
+        });
+      });
+    });
 
     var SEL = IDS.map(function(k){ return '#'+k; });
     gsap.set(['#lid'].concat(SEL), {xPercent:-50});
@@ -1622,7 +1717,9 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       gsap.set('#lid', {x:0, y:CLOSED.lid*S, rotate:0, scale:1, opacity:1});
       IDS.forEach(function(id){ gsap.set('#'+id, {y:CLOSED[id]*S, opacity:1}); });
       gsap.set('#steam',   {opacity:1});
-      gsap.set('.pin-inner', {opacity:0});
+      gsap.set('.pin-inner', {opacity:0, x:0, y:0});
+      gsap.set('.pin-line', {scaleX:0});
+      gsap.set('.pin-dot',  {scale:0});
       gsap.set('#box',     {opacity:0, scale:.75, y:0});
       gsap.set('#boxFlap', {rotateX:-108});
       gsap.set('#boxLogo', {opacity:0});
@@ -1638,7 +1735,10 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         defaults:{ease:'none'},
         scrollTrigger:{
           trigger:hero, start:'top top', end:'bottom bottom',
-          scrub:1, invalidateOnRefresh:true,
+          /* scrub più corto = la scena "risponde" al dito/rotellina quasi
+             subito, restando comunque morbida (era 1 = mezzo secondo di
+             ritardo percepito, che dava la sensazione di scroll incollato) */
+          scrub:0.6, invalidateOnRefresh:true,
           onUpdate:function(self){ setPhase(self.progress); }
         }
       });
@@ -1660,35 +1760,53 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         .to('#pt2',{opacity:0,y:-16,duration:4}, 31)
 
       /* ---------- FASE 3 · un cestello alla volta ----------
-         Anche da telefono: il cestello viene portato al centro e ingrandito,
-         con la didascalia sotto. Uno alla volta, mai i tre insieme piccoli. */
-      /* pt3 ("Chiusi a mano, uno per uno") non viene più animato: il suo
-         intervallo (45-58) cadeva a metà del ciclo del secondo cestello,
-         sovrapponendosi alla sua didascalia — risultato due testi diversi
-         in scena insieme, e il secondo cestello sembrava senza didascalia
-         propria. Ogni cestello ora ha solo la sua pin-card, sincronizzata
-         con la sua comparsa in scena. */
+         Regola: LA DIDASCALIA VIVE E MUORE COL SUO CESTELLO.
+         - compare solo quando il cestello ha finito di arrivare al centro
+           (mai durante il transito: testo in movimento = illeggibile);
+         - resta ferma per tutta la "finestra di lettura" del cestello;
+         - sparisce PRIMA che parta lo spostamento verso il successivo.
+         Così in scena c'è sempre al massimo una card, sempre alla stessa
+         quota del prodotto (vedi --pin-y nel CSS): arrivato al cestello 3
+         della card del cestello 1 non resta traccia.
 
-      /* La didascalia deve comparire solo quando il cestello è arrivato a
-         fuoco — mai mentre è ancora in transito/sfumato. Per questo il fade
-         della pin-card parte solo alla FINE del movimento del cestello
-         (t+8, cioè a spostamento concluso), non insieme ad esso: prima
-         arriva l'immagine "in forma compatta", poi la didascalia. */
+         pt3 ("Chiusi a mano, uno per uno") resta non animato: il suo
+         intervallo cadeva a metà del ciclo del secondo cestello e
+         metteva due testi diversi in scena insieme. */
+
+      /* Ritmo di ogni ciclo (20 unità per cestello):
+           t + 0  → 10   spostamento e zoom sul cestello
+           t + 9.5→ 13   entra la didascalia (aggancio a fine corsa)
+           t +13  → 17.2 finestra di lettura, tutto fermo
+           t +17.2→ 20   esce la didascalia, poi riparte il movimento   */
+      var PX = isMobile ? 0 : 22;                     /* scorrimento d'entrata */
+      var PY = isMobile ? 16 : 0;
       IDS.forEach(function(id,i){
-        var t = 36 + i*14;
+        var t   = 36 + i*20;
+        var pin = '.pin-'+(i+1)+' ';
         var other = SEL.filter(function(s){ return s !== '#'+id; });
-        tl.to('#steamer', {y:foc(id), scale:FS, duration:8, ease:'power2.inOut'}, t)
-          .to('#'+id,     {opacity:1, duration:3, ease:'sine.inOut'}, t)
-          .to(other,      {opacity:isMobile ? 0 : .20, duration:3, ease:'sine.inOut'}, t)
-          .fromTo('.pin-'+(i+1)+' .pin-inner',
-                  {opacity:0, x:isMobile ? 0 : (i%2 ? -26 : 26), y:isMobile ? 14 : 0},
-                  {opacity:1, x:0, y:0, duration:2, ease:'sine.out'}, t+8)
-          .to('.pin-'+(i+1)+' .pin-inner', {opacity:0, duration:2, ease:'sine.in'}, t+12);
+
+        tl.to('#steamer', {y:foc(id), scale:FS, duration:10, ease:'power2.inOut'}, t)
+          .to('#'+id,     {opacity:1, duration:5, ease:'sine.inOut'}, t)
+          .to(other,      {opacity:isMobile ? 0 : .18, duration:5, ease:'sine.inOut'}, t)
+
+          /* --- entrata: filo, pallino, card --- */
+          .fromTo(pin+'.pin-dot',   {scale:0},  {scale:1, duration:1.6, ease:'back.out(2)'}, t+9.5)
+          .fromTo(pin+'.pin-line',  {scaleX:0}, {scaleX:1, duration:2.4, ease:'power2.out'}, t+9.9)
+          .fromTo(pin+'.pin-inner',
+                  {opacity:0, x:PX, y:PY},
+                  {opacity:1, x:0, y:0, duration:3.2, ease:'power2.out'}, t+9.5)
+
+          /* --- uscita: prima che il cestello se ne vada --- */
+          .to(pin+'.pin-inner', {opacity:0, x:-PX*0.5, y:-PY*0.5,
+                                 duration:2.8, ease:'power1.in'}, t+17.2)
+          .to(pin+'.pin-line',  {scaleX:0, duration:2.4, ease:'power1.in'}, t+17.2)
+          .to(pin+'.pin-dot',   {scale:0,  duration:2.2, ease:'power1.in'}, t+17.6);
       });
 
       /* ---------- FASE 4 · confezionamento ---------- */
-      var P4 = 79;
+      var P4 = 97;
       tl.to('#steamer',{y:openShift, scale:OS*0.90, duration:8, ease:'power2.inOut'}, P4)
+        .to('.pin-inner', {opacity:0, duration:5, ease:'sine.in'}, P4)
         .to(SEL,{opacity:1, duration:4}, P4)
         .to('#b1',{y:OPEN.b1*S + 0.55*S, duration:10, ease:'power1.in'}, P4+4)
         .to('#b2',{y:OPEN.b2*S + 0.10*S, duration:10, ease:'power1.in'}, P4+4)
@@ -1700,6 +1818,9 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         .to('#boxFlap',{rotateX:-6, duration:9, ease:'power2.inOut'}, P4+18)
         .fromTo('#boxLogo',{opacity:0},{opacity:1, duration:5}, P4+24)
         .fromTo('#heroCta',{opacity:0,y:24},{opacity:1,y:0,duration:6}, P4+24);
+
+      TLD = tl.duration();   /* i pallini e il salto usano la durata reale */
+      setPhase(tl.scrollTrigger ? tl.scrollTrigger.progress : 0);
     }
 
     mm.add({
