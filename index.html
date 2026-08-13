@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KX Ming Ravioli — Ravioli al vapore fatti a mano | Verona</title>
-<meta name="description" content="KX Ming Ravioli: ravioli al vapore artigianali, chiusi a mano ogni giorno. Ordina online a Verona, consegna e ritiro al locale.">
+<title>KX Ming Ravioli — Ravioli al vapore fatti a mano | Milano & Verona</title>
+<meta name="description" content="KX Ming Ravioli: ravioli al vapore artigianali, chiusi a mano ogni giorno. Sede principale a Milano (zona Paolo Sarpi), seconda sede a Verona. Ordina online, consegna e ritiro al locale.">
 <meta property="og:title" content="KX Ming Ravioli — Ravioli al vapore fatti a mano">
-<meta property="og:description" content="Ravioli artigianali chiusi a mano, cotti al vapore in vaporiera di bambù. Ordina online a Verona.">
+<meta property="og:description" content="Ravioli artigianali chiusi a mano, cotti al vapore in vaporiera di bambù. Sede principale a Milano, seconda sede a Verona.">
 <meta property="og:type" content="restaurant">
 <meta name="theme-color" content="#17120e">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -100,6 +100,9 @@ section{position:relative}
 .brand-name small{display:block;font-family:var(--font-body);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--bamboo);font-weight:600;margin-top:3px}
 .hdr-rating{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--cream-dim)}
 .hdr-rating b{color:var(--cream);font-size:15px}
+.hdr-loc{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--cream-dim);
+  border-left:1px solid rgba(246,238,226,.16);padding-left:16px;letter-spacing:.01em}
+.hdr-loc b{color:var(--bamboo);font-weight:700}
 .nav{margin-left:auto;display:flex;align-items:center;gap:26px}
 .nav a{text-decoration:none;font-size:14.5px;font-weight:500;color:var(--cream-dim);transition:color .2s}
 .nav a:hover{color:var(--bamboo)}
@@ -340,6 +343,23 @@ section{position:relative}
 .rev-card q{display:block;margin:12px 0 16px;font-size:15.5px;line-height:1.6;quotes:"“" "”"}
 .rev-card cite{font-style:normal;font-size:13px;color:var(--cream-dim);font-weight:600}
 
+/* sedi */
+.sedi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:34px}
+.sedi-card{
+  display:block;text-decoration:none;color:var(--cream);
+  background:var(--ink-3);border:1px solid rgba(246,238,226,.07);
+  border-radius:var(--r);padding:24px;transition:.3s ease;
+}
+.sedi-card:hover{border-color:rgba(217,179,108,.35);transform:translateY(-4px)}
+.sedi-card h3{font-family:var(--font-display);font-size:24px;margin:10px 0 8px}
+.sedi-card p{font-size:14.5px;color:var(--cream-dim);line-height:1.5;margin:0}
+.sedi-tag{
+  display:inline-block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  font-weight:700;color:var(--cream-dim);border:1px solid rgba(246,238,226,.2);
+  border-radius:100px;padding:4px 10px;
+}
+.sedi-tag-main{color:#2a1d10;background:var(--bamboo);border-color:var(--bamboo)}
+
 /* chi siamo */
 .about{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,6vw,80px);align-items:center}
 .about-media{
@@ -451,6 +471,7 @@ section{position:relative}
 
 /* trovaci */
 .find{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,64px)}
+.find-locations{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(28px,5vw,64px);margin-top:40px}
 .info-row{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid rgba(246,238,226,.08)}
 .info-row .k{flex:0 0 116px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--bamboo);font-weight:700;padding-top:3px}
 .info-row .v{font-size:15.5px}
@@ -552,6 +573,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
   /* chi arriva da telefono cerca i piatti e i prezzi: menu subito dopo la hero */
   main{display:flex;flex-direction:column}
   #hero{order:0}
+  #sedi{order:0}
   #menu{order:1}
   #recensioni{order:2}
   #storia{order:3}
@@ -587,17 +609,19 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
 /* fra 820 e 1040 px il menu andava a capo: stringo e tolgo il badge recensioni */
 @media (max-width:1040px){
   .hdr-rating{display:none}
+  .hdr-loc{display:none}
   .nav{gap:16px}
   .nav a{font-size:13.5px}
   .site-header{gap:14px}
 }
 @media (max-width:1000px){
-  .about,.find{grid-template-columns:1fr}
+  .about,.find,.find-locations{grid-template-columns:1fr}
   .foot-grid{grid-template-columns:1fr 1fr}
 }
 @media (max-width:820px){
   body{font-size:16px}
   .hdr-rating{display:none}
+  .hdr-loc{display:none}
   .nav{position:fixed;inset:0 0 auto 0;top:0;padding:84px var(--pad) 28px;
     background:rgba(23,18,14,.98);backdrop-filter:blur(16px);
     flex-direction:column;align-items:flex-start;gap:4px;
@@ -705,12 +729,16 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
   <div class="hdr-rating" aria-label="Valutazione 4,8 su 5 basata su 214 recensioni">
     <span style="color:var(--bamboo)">★★★★★</span> <b>4,8</b> <span>· 214 recensioni</span>
   </div>
+  <div class="hdr-loc" aria-label="Sedi: Milano sede principale, Verona seconda sede">
+    <b>Milano</b><span>sede principale</span> <span>· Verona</span>
+  </div>
   <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="nav" aria-label="Apri menu">
     <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M3 7h18M3 12h18M3 17h18"/>
     </svg>
   </button>
   <nav class="nav" id="nav">
+    <a href="#sedi">Sedi</a>
     <a href="#recensioni">Recensioni</a>
     <a href="#storia">Chi siamo</a>
     <a href="#menu">Menu</a>
@@ -747,7 +775,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         <div class="box-body">
           <div class="box-face">
             <svg class="bf-mark" style="color:#6b4d2c" aria-hidden="true"><use href="#mark"/></svg>
-            <span class="bf-txt">Fatti a mano · Verona</span>
+            <span class="bf-txt">Fatti a mano · Milano</span>
           </div>
         </div>
         <div class="box-flap" id="boxFlap">
@@ -790,7 +818,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
     <!-- logo overlay -->
     <div class="hero-logo" id="heroLogo">
       <h1>KX Ming Ravioli</h1>
-      <p>Ravioli al vapore · Verona</p>
+      <p>Ravioli al vapore · Milano &amp; Verona</p>
     </div>
 
     <!-- testi di fase -->
@@ -812,6 +840,31 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
 
     <div class="phase-dots" id="phaseDots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
     <div class="hero-vignette"></div>
+  </div>
+</section>
+
+<!-- =========================================================
+     SEDI
+     ========================================================= -->
+<section id="sedi" class="pad-y">
+  <div class="wrap">
+    <p class="eyebrow">Le nostre sedi</p>
+    <h2 class="sec-title">Milano e Verona.</h2>
+    <p class="lead" style="margin-top:14px;max-width:56ch">
+      La sede principale è a Milano, a due passi da via Paolo Sarpi. Il laboratorio storico resta a Verona, sotto Castelvecchio.
+    </p>
+    <div class="sedi-grid">
+      <a class="sedi-card" href="#trovaci">
+        <span class="sedi-tag sedi-tag-main">Sede principale</span>
+        <h3>Milano</h3>
+        <p>Via Rosmini 8, 20154 Milano<br><small>Zona Paolo Sarpi</small></p>
+      </a>
+      <a class="sedi-card" href="#trovaci">
+        <span class="sedi-tag">Seconda sede</span>
+        <h3>Verona</h3>
+        <p>Corso Castelvecchio 3b, 37122 Verona<br><small>A due passi da Castelvecchio</small></p>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -873,6 +926,9 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       <p class="lead" style="margin-top:14px">
         Dentro ci mettiamo solo verdure e carne di altissima qualità, scelta ogni mattina.
         Nessun colorante, nessun conservante: se non lo mangeremmo noi, non esce dalla cucina.
+      </p>
+      <p class="lead" style="margin-top:14px">
+        Oggi la sede principale è a Milano, a due passi da via Paolo Sarpi. Il laboratorio storico resta a Verona, sotto le mura di Castelvecchio.
       </p>
       <div class="stats">
         <div class="stat"><b>1.200</b><span>ravioli chiusi al giorno</span></div>
@@ -1245,8 +1301,8 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       <div>
         <p class="eyebrow">Ordina</p>
         <h2>Ancora caldi<br>quando arrivano.</h2>
-        <p>Consegniamo in tutta Verona. Ordine minimo 12 €.
-          Oppure passa a ritirare in Corso Castelvecchio.</p>
+        <p>Consegniamo a Milano (zona Sarpi e centro) e in tutta Verona. Ordine minimo 12 €.
+          Oppure passa a ritirare: a Milano in via Rosmini, a Verona in Corso Castelvecchio.</p>
       </div>
       <div class="order-actions">
         <a class="btn btn-primary" href="#" data-order>Ordina su JustEat</a>
@@ -1284,9 +1340,30 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
 <section id="trovaci" class="pad-y">
   <div class="wrap">
     <p class="eyebrow">Trovaci</p>
-    <h2 class="sec-title">Verona, Corso Castelvecchio</h2>
-    <div class="find" style="margin-top:40px">
+    <h2 class="sec-title">Milano &amp; Verona</h2>
+    <div class="find-locations">
       <div>
+        <span class="sedi-tag sedi-tag-main" style="margin-bottom:14px;display:inline-block">Sede principale</span>
+        <h3 style="font-size:22px;margin:0 0 16px">Milano</h3>
+        <div class="info-row"><div class="k">Indirizzo</div>
+          <div class="v"><a href="https://maps.google.com/?q=Via+Rosmini+8+20154+Milano"
+             target="_blank" rel="noopener" style="text-decoration:none">Via Rosmini 8, 20154 Milano</a>
+             <small>A due passi da via Paolo Sarpi · tocca per aprire le mappe</small></div></div>
+        <div class="info-row"><div class="k">Telefono</div>
+          <div class="v"><a href="tel:+39045666886" style="text-decoration:none">045 666 886</a></div></div>
+        <div class="info-row"><div class="k">Email</div>
+          <div class="v"><a href="mailto:info@kxming.it" style="text-decoration:none">info@kxming.it</a></div></div>
+        <div class="info-row" style="border-bottom:0"><div class="k">Consegna</div>
+          <div class="v">Zona Sarpi e centro Milano<small>Ordine minimo 12 € · costo consegna 2,50 €</small></div></div>
+        <a class="map-ph" href="https://maps.google.com/?q=Via+Rosmini+8+20154+Milano"
+           target="_blank" rel="noopener" aria-label="Apri la posizione di Milano su Google Maps">
+          <span class="pinmark"></span>
+          <span class="ph-note">Milano · tocca per aprire su Google Maps</span>
+        </a>
+      </div>
+      <div>
+        <span class="sedi-tag" style="margin-bottom:14px;display:inline-block">Seconda sede</span>
+        <h3 style="font-size:22px;margin:0 0 16px">Verona</h3>
         <div class="info-row"><div class="k">Indirizzo</div>
           <div class="v"><a href="https://maps.google.com/?q=Corso+Castelvecchio+3b+37122+Verona"
              target="_blank" rel="noopener" style="text-decoration:none">Corso Castelvecchio 3b, 37122 Verona</a>
@@ -1298,33 +1375,31 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         <div class="info-row" style="border-bottom:0"><div class="k">Consegna</div>
           <div class="v">Tutta Verona<small>Ordine minimo 12 € · costo consegna 2,50 €</small></div></div>
         <a class="map-ph" href="https://maps.google.com/?q=Corso+Castelvecchio+3b+37122+Verona"
-           target="_blank" rel="noopener" aria-label="Apri la posizione su Google Maps">
+           target="_blank" rel="noopener" aria-label="Apri la posizione di Verona su Google Maps">
           <span class="pinmark"></span>
-          <span class="ph-note">Tocca per aprire su Google Maps</span>
+          <span class="ph-note">Verona · tocca per aprire su Google Maps</span>
         </a>
       </div>
-      <div>
-        <h3 style="font-size:22px;margin-bottom:16px">Orari di apertura</h3>
-        <div class="hours-toggle" id="hoursToggle" role="tablist">
-          <button class="on" data-h="delivery" role="tab" aria-selected="true">Consegna</button>
-          <button data-h="pickup" role="tab" aria-selected="false">Ritiro al locale</button>
-        </div>
-        <table class="hours" id="hoursTable">
-          <tbody>
-            <tr data-d="1"><th scope="row">Lunedì</th><td></td></tr>
-            <tr data-d="2"><th scope="row">Martedì</th><td></td></tr>
-            <tr data-d="3"><th scope="row">Mercoledì</th><td></td></tr>
-            <tr data-d="4"><th scope="row">Giovedì</th><td></td></tr>
-            <tr data-d="5"><th scope="row">Venerdì</th><td></td></tr>
-            <tr data-d="6"><th scope="row">Sabato</th><td></td></tr>
-            <tr data-d="0"><th scope="row">Domenica</th><td></td></tr>
-          </tbody>
-        </table>
-        <p class="hours-note">Gli orari di consegna possono variare in base al traffico ordini.</p>
-        <div class="zone">
-          <b>Tutta Verona</b><span>città e quartieri limitrofi, consegna in 30-40 minuti</span>
-        </div>
+    </div>
+    <div style="margin-top:52px">
+      <h3 style="font-size:22px;margin-bottom:6px">Orari di apertura</h3>
+      <p class="hours-note" style="margin:0 0 16px">Stessi orari in entrambe le sedi.</p>
+      <div class="hours-toggle" id="hoursToggle" role="tablist">
+        <button class="on" data-h="delivery" role="tab" aria-selected="true">Consegna</button>
+        <button data-h="pickup" role="tab" aria-selected="false">Ritiro al locale</button>
       </div>
+      <table class="hours" id="hoursTable" style="max-width:480px">
+        <tbody>
+          <tr data-d="1"><th scope="row">Lunedì</th><td></td></tr>
+          <tr data-d="2"><th scope="row">Martedì</th><td></td></tr>
+          <tr data-d="3"><th scope="row">Mercoledì</th><td></td></tr>
+          <tr data-d="4"><th scope="row">Giovedì</th><td></td></tr>
+          <tr data-d="5"><th scope="row">Venerdì</th><td></td></tr>
+          <tr data-d="6"><th scope="row">Sabato</th><td></td></tr>
+          <tr data-d="0"><th scope="row">Domenica</th><td></td></tr>
+        </tbody>
+      </table>
+      <p class="hours-note">Gli orari di consegna possono variare in base al traffico ordini.</p>
     </div>
   </div>
 </section>
@@ -1342,12 +1417,12 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
           <span class="brand-name">KX Ming<small>Ravioli</small></span>
         </a>
         <p style="color:var(--cream-dim);font-size:14.5px;max-width:32ch;margin:0">
-          Ravioli al vapore chiusi a mano. Corso Castelvecchio 3b, Verona.
+          Ravioli al vapore chiusi a mano.<br>Milano (sede principale) · Verona.
         </p>
       </div>
       <div>
         <h4>Sito</h4>
-        <a href="#menu">Menu</a><a href="#storia">Chi siamo</a>
+        <a href="#sedi">Sedi</a><a href="#menu">Menu</a><a href="#storia">Chi siamo</a>
         <a href="#recensioni">Recensioni</a><a href="#trovaci">Trovaci</a>
       </div>
       <div>
@@ -1591,16 +1666,20 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         tl.fromTo('#pt3',{opacity:0,y:20},{opacity:1,y:0,duration:5}, 45)
           .to('#pt3',{opacity:0,y:-16,duration:4}, 58);
       }
+      /* Il cross-fade fra un cestello e l'altro (e l'apparire/sparire della
+         didascalia) resta volutamente breve: la maggior parte dello scroll
+         di ogni cestello deve mostrare la "forma compatta" — cestello e
+         pin-card pienamente leggibili — non uno stato intermedio sfumato. */
       IDS.forEach(function(id,i){
         var t = 36 + i*11;
         var other = SEL.filter(function(s){ return s !== '#'+id; });
         tl.to('#steamer', {y:foc(id), scale:FS, duration:9, ease:'power2.inOut'}, t)
-          .to('#'+id,     {opacity:1, duration:6}, t)
-          .to(other,      {opacity:isMobile ? 0 : .20, duration:6}, t)
+          .to('#'+id,     {opacity:1, duration:1.5}, t)
+          .to(other,      {opacity:isMobile ? 0 : .20, duration:1.5}, t)
           .fromTo('.pin-'+(i+1)+' .pin-inner',
                   {opacity:0, x:isMobile ? 0 : (i%2 ? -26 : 26), y:isMobile ? 14 : 0},
-                  {opacity:1, x:0, y:0, duration:4}, t+4)
-          .to('.pin-'+(i+1)+' .pin-inner', {opacity:0, duration:3}, t+9);
+                  {opacity:1, x:0, y:0, duration:1.5}, t+1.5)
+          .to('.pin-'+(i+1)+' .pin-inner', {opacity:0, duration:1.5}, t+9.5);
       });
 
       /* ---------- FASE 4 · confezionamento ---------- */
