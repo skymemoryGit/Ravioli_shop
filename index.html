@@ -1638,7 +1638,7 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
         defaults:{ease:'none'},
         scrollTrigger:{
           trigger:hero, start:'top top', end:'bottom bottom',
-          scrub:.85, invalidateOnRefresh:true,
+          scrub:1, invalidateOnRefresh:true,
           onUpdate:function(self){ setPhase(self.progress); }
         }
       });
@@ -1662,28 +1662,32 @@ table.hours tr.today th{color:var(--bamboo);font-weight:700}
       /* ---------- FASE 3 · un cestello alla volta ----------
          Anche da telefono: il cestello viene portato al centro e ingrandito,
          con la didascalia sotto. Uno alla volta, mai i tre insieme piccoli. */
-      if(!isMobile){
-        tl.fromTo('#pt3',{opacity:0,y:20},{opacity:1,y:0,duration:5}, 45)
-          .to('#pt3',{opacity:0,y:-16,duration:4}, 58);
-      }
-      /* Il cross-fade fra un cestello e l'altro (e l'apparire/sparire della
-         didascalia) resta volutamente breve: la maggior parte dello scroll
-         di ogni cestello deve mostrare la "forma compatta" — cestello e
-         pin-card pienamente leggibili — non uno stato intermedio sfumato. */
+      /* pt3 ("Chiusi a mano, uno per uno") non viene più animato: il suo
+         intervallo (45-58) cadeva a metà del ciclo del secondo cestello,
+         sovrapponendosi alla sua didascalia — risultato due testi diversi
+         in scena insieme, e il secondo cestello sembrava senza didascalia
+         propria. Ogni cestello ora ha solo la sua pin-card, sincronizzata
+         con la sua comparsa in scena. */
+
+      /* La didascalia deve comparire solo quando il cestello è arrivato a
+         fuoco — mai mentre è ancora in transito/sfumato. Per questo il fade
+         della pin-card parte solo alla FINE del movimento del cestello
+         (t+8, cioè a spostamento concluso), non insieme ad esso: prima
+         arriva l'immagine "in forma compatta", poi la didascalia. */
       IDS.forEach(function(id,i){
-        var t = 36 + i*11;
+        var t = 36 + i*14;
         var other = SEL.filter(function(s){ return s !== '#'+id; });
-        tl.to('#steamer', {y:foc(id), scale:FS, duration:9, ease:'power2.inOut'}, t)
-          .to('#'+id,     {opacity:1, duration:1.5}, t)
-          .to(other,      {opacity:isMobile ? 0 : .20, duration:1.5}, t)
+        tl.to('#steamer', {y:foc(id), scale:FS, duration:8, ease:'power2.inOut'}, t)
+          .to('#'+id,     {opacity:1, duration:3, ease:'sine.inOut'}, t)
+          .to(other,      {opacity:isMobile ? 0 : .20, duration:3, ease:'sine.inOut'}, t)
           .fromTo('.pin-'+(i+1)+' .pin-inner',
                   {opacity:0, x:isMobile ? 0 : (i%2 ? -26 : 26), y:isMobile ? 14 : 0},
-                  {opacity:1, x:0, y:0, duration:1.5}, t+1.5)
-          .to('.pin-'+(i+1)+' .pin-inner', {opacity:0, duration:1.5}, t+9.5);
+                  {opacity:1, x:0, y:0, duration:2, ease:'sine.out'}, t+8)
+          .to('.pin-'+(i+1)+' .pin-inner', {opacity:0, duration:2, ease:'sine.in'}, t+12);
       });
 
       /* ---------- FASE 4 · confezionamento ---------- */
-      var P4 = 70;
+      var P4 = 79;
       tl.to('#steamer',{y:openShift, scale:OS*0.90, duration:8, ease:'power2.inOut'}, P4)
         .to(SEL,{opacity:1, duration:4}, P4)
         .to('#b1',{y:OPEN.b1*S + 0.55*S, duration:10, ease:'power1.in'}, P4+4)
